@@ -1,0 +1,1 @@
+{ TC("CALL: nsta=%zu, ntok=%zu, errst=%d, inist=%d, accst=%p, naccst=%zu, delta=%p, f_mktok=(fp)", nsta, ntok, errst, inist, (void *)accst, naccst, (void *)delta);

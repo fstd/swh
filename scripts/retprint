@@ -1,0 +1,16 @@
+bool:%d:int
+char:%d:int
+char *:'%s':char *
+const char *:'%s':const char *
+char **:%p:void *
+fsm *:%p:void *
+int:%d:int
+long:%ld:long
+size_t:%zu:size_t
+ssize_t:%zd:ssize_t
+uint16_t:%"PRIu16":uint16_t
+uint32_t:%"PRIu32":uint32_t
+uint64_t:%"PRIu64":uint64_t
+uint8_t:%"PRIu8":uint8_t
+void *:%p:void *
+void:(void):void

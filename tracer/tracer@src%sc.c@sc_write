@@ -1,0 +1,1 @@
+{ TC("CALL: str=%p, len=%zu", (void *)str, len);

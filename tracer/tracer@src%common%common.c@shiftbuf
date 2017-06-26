@@ -1,0 +1,1 @@
+{ TC("CALL: buf=%p, bufcnt=%p (%zu), n=%zu", (void *)buf, (void *)bufcnt, *bufcnt, n);
