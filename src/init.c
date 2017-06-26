@@ -16,10 +16,23 @@
 #include <getopt.h>
 
 #include "common/log.h"
+#include "common/common.h"
+#include "nami.h"
+#include "core.h"
+
+
+/* selected user front-end (currently there's only one) */
+static char s_ux[32] = "auto";
+
+/* selected switch back-end (currently there's only one) */
+static char s_sx[32] = "auto";
+
+/* host to connect to */
+static char s_host[256];
 
 
 static void process_args(int argc, char **argv);
-static void init(int argc, char **argv);
+static void init(int argc, char **argv, char **envp);
 static void usage(FILE *str, const char *a0, int ec);
 static void update_logger(int verb, int fancy);
 
@@ -29,8 +42,20 @@ process_args(int argc, char **argv)
 {
 	char *a0 = argv[0];
 
-	for(int ch; (ch = getopt(argc, argv, "cvqh")) != -1;) {
+	for(int ch; (ch = getopt(argc, argv, "Xx:Ss:cvqh")) != -1;) {
 		switch (ch) {
+		case 's':
+			snprintf(s_sx, sizeof s_sx, "%s", optarg);
+			break;
+		case 'S':
+			nami_backends(stdout);
+			exit(0);
+		case 'x':
+			snprintf(s_ux, sizeof s_ux, "%s", optarg);
+			break;
+		case 'X':
+			nami_frontends(stdout);
+			exit(0);
 		case 'c':
 			update_logger(0, 1);
 			break;
@@ -48,15 +73,31 @@ process_args(int argc, char **argv)
 			usage(stderr, a0, EXIT_FAILURE);
 		}
 	}
+
+	argc -= optind;
+	argv += optind;
+
+	if (argc == 0)
+		C("argument missing (switch hostname or address)");
+
+	snprintf(s_host, sizeof s_host, "%s", argv[0]);
+
+	if (strcmp(s_ux, "auto") == 0)
+		strcpy(s_ux, "ia"); // There's just one uc for now
+
+	if (strcmp(s_sx, "auto") == 0)
+		strcpy(s_sx, "hp"); // There's just one backend for now
 }
 
 static void
-init(int argc, char **argv)
+init(int argc, char **argv, char **envp)
 {
 	log_init();
 	log_set_ourname(PACKAGE_NAME);
 
 	process_args(argc, argv);
+
+	core_init(s_ux, s_sx, envp);
 
 	N("all subsystems initialized");
 }
@@ -68,14 +109,18 @@ usage(FILE *str, const char *a0, int ec)
 	U("================");
 	U("== "PACKAGE_NAME" v"PACKAGE_VERSION" ==");
 	U("================");
-	fprintf(str, "usage: %s [-cvqh]\n", a0);
+	fprintf(str, "usage: %s [-x <frontend>] [-s <backend>] [-XScvqh]\n", a0);
 	U("");
+	U("\t-x <frontend>: Use user interface <frontend> (default: auto)");
+	U("\t-X: List known user interfaces types and exit");
+	U("\t-s <backend>: Use switch interface <backend> (default: auto)");
+	U("\t-S: List known switch interfaces types and exit");
 	U("\t-c: Use ANSI color sequences on stderr");
 	U("\t-v: Be more verbose (multiple are OK)");
 	U("\t-q: Be less verbose (multiple are OK)");
 	U("\t-h: Display brief usage statement and terminate");
 	U("");
-	U("(C) 2017, Timo Buhrmester");
+	U("(C) 2017, Timo Buhrmester <van.fstd@gmail.com>");
 	#undef U
 	exit(ec);
 }
@@ -97,9 +142,9 @@ update_logger(int verb, int fancy)
 
 
 int
-main(int argc, char **argv)
+main(int argc, char **argv, char **envp)
 {
-	init(argc, argv);
+	init(argc, argv, envp);
 
-	return 0;
+	return core_run(s_host);
 }

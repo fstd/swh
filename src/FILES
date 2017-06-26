@@ -1,0 +1,26 @@
+init.c                       Argument processing, core launching
+common.[ch]                  Misc/utility functions available to all subsystems
+core.[ch]                    Main loop, mostly.  Mediates between uc* and sc
+log.[ch]                     Logger
+sc.[ch]                      Switch communication
+spawn.[ch]                   fork/exec ssh, create pipes
+nami.[ch]                    Knows frontend and backend names for printing
+
+front/frontends.h            X-macro include knowing all user frontends
+front/uc.[ch]                User interface abstraction
+front/uc_ia.c                Interactive user interface (stdin/stdout)
+front/uc_noop.c              No-op user interface (template for new ones)
+
+back/backends.h              X-macro include knowing all switch backends
+back/ansiseq.[ch]            ANSI escape sequence eating state machine
+back/fsm.[ch]                Finite state machine engine
+back/fsm_cmdout.[ch]         Abtraction of the command output FSM
+back/fsm_inchar.[ch]         Abtraction of the input char echo FSM
+back/fsm_init.[ch]           Abtraction of the initial chat FSM
+
+back/hp/fsm_cmdout_hp.c      fsm_cmdout implementation for HP gear
+back/hp/fsm_inchar_hp.c      fsm_inchar implementation for HP gear
+back/hp/fsm_init_hp.c        fsm_init implementation for HP gear
+back/hp/common_hp.[ch]       Functions common to the HP backend
+
+gen/logmods.h                X-macro include knowing all logger modnames
