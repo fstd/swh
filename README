@@ -1,0 +1,12 @@
+This is swh, version 0.0.0
+XXX
+
+Quickstart:
+run ./autogen.sh to setup the autohell
+afterwards, usual ./configure ; make ; make install stuff applies
+
+See INSTALL for generic autohell compile/install instructions.
+
+(C) 2017 Timo Buhrmester <van.fstd@gmail.com>
+
+See COPYING for license information
